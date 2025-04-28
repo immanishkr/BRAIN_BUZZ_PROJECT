@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f3e8ff, #e0c3fc); /* Soft lavender gradient */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    perspective: 1000px; /* Needed for 3D effect */
+    position: relative;
+}
+
+/* Add blurred background image */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('bg2.jpg') no-repeat center center fixed;
+    background-size: cover;
+    filter: blur(11px); /* 80% blur (adjust the value as necessary for desired effect) */
+    z-index: -1; /* Place the blur effect behind the content */
+}
+
+/* Animate container tilt */
+body > * {
+    transition: transform 0.4s ease;
+}
+
+body > *:hover {
+    transform: rotateY(3deg) rotateX(3deg) scale(1.02);
+}
+
+/* Heading */
+h2 {
+    font-size: 2rem;
+    color: #5c5470;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="password"] {
+    width: 280px;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #d3c0eb;
+    border-radius: 10px;
+    background-color: #f6efff;
+    font-size: 1rem;
+    color: #4a3f63;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #b39ddb;
+    box-shadow: 0 0 0 3px #ebe1ff;
+    outline: none;
+    transform: scale(1.03);
+}
+
+/* Register Button */
+button {
+    padding: 12px 25px;
+    background: #c7b5ff;
+    color: #4a3f63;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background: #e0d4ff;
+    transform: translateY(-2px) scale(1.05);
+}

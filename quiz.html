@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz Page</title>
+  <link rel="stylesheet" href="style1.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    #timer {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(6px);
+      padding: 8px 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #question-container {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 60%;
+      margin: 0 auto 20px;
+    }
+
+    #question {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      display: block;
+      width: 80%;
+      margin: 10px auto;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #7FB3D5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #5499C7;
+    }
+
+    #next-button {
+      display: none;
+    }
+
+    #score {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">10:00</div>
+
+  <h1>Quiz Time!</h1>
+
+  <div id="question-container">
+    <div id="question"></div>
+    <button id="optionA"></button>
+    <button id="optionB"></button>
+    <button id="optionC"></button>
+    <button id="optionD"></button>
+  </div>
+
+  <button id="next-button" onclick="nextQuestion()">Next Question</button>
+  <p id="score"></p>
+
+  <script>
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let questions = [];
+
+    // Handle refresh - end quiz with 0 score
+    if (performance.navigation.type === 1) {
+      localStorage.setItem("score", "0 out of 0");
+      window.location.href = "scoreboard.html";
+    }
+
+    fetch('http://localhost:8080/quiz/questions')
+      .then(response => response.json())
+      .then(data => {
+        questions = data;
+        displayQuestion(currentQuestionIndex);
+      });
+
+    function displayQuestion(index) {
+      if (index < questions.length) {
+        const question = questions[index];
+        document.getElementById('question').innerText = question.questionText;
+        document.getElementById('optionA').innerText = question.optionA;
+        document.getElementById('optionB').innerText = question.optionB;
+        document.getElementById('optionC').innerText = question.optionC;
+        document.getElementById('optionD').innerText = question.optionD;
+        document.getElementById('next-button').style.display = 'none';
+      } else {
+        displayScore();
+      }
+    }
+
+    function selectOption(selectedOption) {
+      const correctAnswer = questions[currentQuestionIndex].correctAnswer;
+      if (selectedOption === correctAnswer) {
+        score++;
+      }
+      document.getElementById('next-button').style.display = 'inline';
+    }
+
+    document.getElementById('optionA').onclick = () => selectOption('A');
+    document.getElementById('optionB').onclick = () => selectOption('B');
+    document.getElementById('optionC').onclick = () => selectOption('C');
+    document.getElementById('optionD').onclick = () => selectOption('D');
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      displayQuestion(currentQuestionIndex);
+    }
+
+    function displayScore() {
+      document.getElementById('score').innerText = `Your score is: ${score} out of ${questions.length}`;
+      localStorage.setItem("score", `${score} out of ${questions.length}`);
+      setTimeout(() => window.location.href = "scoreboard.html", 3000);
+    }
+
+    // Timer logic
+    let timeLeft = 600; // 10 minutes in seconds
+    const timerDisplay = document.getElementById('timer');
+
+    const timerInterval = setInterval(() => {
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+      timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert("Time's up!");
+        displayScore();
+      }
+
+      timeLeft--;
+    }, 1000);
+  </script>
+</body>
+</html>

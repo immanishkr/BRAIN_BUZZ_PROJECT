@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function login(event) {
+            event.preventDefault(); // Prevent form from reloading the page
+
+            const user = {
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value
+            };
+
+            fetch("http://localhost:8080/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user) // ✅ use actual input values
+            })
+                .then(res => res.text())
+                .then(data => {
+                    if (data === "success") {
+                        window.location.href = "display.html"; // ✅ your quiz page
+                    } else {
+                        alert("Invalid login. Please try again.");
+                    }
+                });
+        }
+    </script>
+</head>
+
+<body>
+    
+    <form id="loginForm" onsubmit="login(event)">
+        <h1>Login</h1>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+</body>
+
+</html>
